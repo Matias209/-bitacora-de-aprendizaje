@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bitácora de Aprendizaje</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Pantalla de clave: mientras está visible, la app no muestra ningún dato -->
+  <section id="bloqueo" class="bloqueo" hidden>
+    <form id="form-acceso" class="tarjeta formulario" novalidate>
+      <h2 id="acceso-titulo">🔒 Bitácora de Aprendizaje</h2>
+      <p id="acceso-ayuda" class="ayuda"></p>
+      <label>Clave
+        <input type="password" name="clave" autocomplete="current-password">
+      </label>
+      <label id="acceso-repetir" hidden>Repetir clave
+        <input type="password" name="clave2" autocomplete="new-password">
+      </label>
+      <button type="submit" id="acceso-btn" class="primario">Entrar</button>
+      <p id="acceso-msg" class="mensaje error" role="alert" hidden></p>
+    </form>
+  </section>
+
+  <!-- Toda la app vive acá dentro y se muestra solo con la clave correcta -->
+  <div id="app" hidden>
+
+  <!-- Navegación por anclas: todas las secciones están en la misma página -->
+  <header class="barra">
+    <div class="barra-titulo">
+      <h1>📓 Bitácora de Aprendizaje</h1>
+      <button type="button" id="bloquear-btn" class="chico">🔒 Bloquear</button>
+    </div>
+    <nav>
+      <a href="#panel">Panel</a>
+      <a href="#importar">Importar</a>
+      <a href="#registro">Registro</a>
+      <a href="#historial">Historial</a>
+      <a href="#habitos">Hábitos</a>
+      <a href="#respaldo">Respaldo</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- 1. PANEL PRINCIPAL -->
+    <section id="panel">
+      <h2>Panel principal</h2>
+      <div class="tarjeta racha-grande">
+        <div class="racha-numero"><span>🔥</span> <span id="racha-actual">0</span></div>
+        <div class="racha-texto">días seguidos de estudio</div>
+      </div>
+      <div class="grilla-datos">
+        <div class="tarjeta dato">
+          <span class="dato-valor" id="racha-max">0</span>
+          <span class="dato-etiqueta">Racha más larga</span>
+        </div>
+        <div class="tarjeta dato">
+          <span class="dato-valor" id="puntos-total">0</span>
+          <span class="dato-etiqueta">Puntos totales</span>
+        </div>
+        <div class="tarjeta dato">
+          <span class="dato-valor" id="nivel">1</span>
+          <span class="dato-etiqueta" id="nivel-detalle">Nivel</span>
+        </div>
+        <div class="tarjeta dato">
+          <span class="dato-valor" id="semana-sesiones">0</span>
+          <span class="dato-etiqueta">Sesiones (7 días)</span>
+        </div>
+        <div class="tarjeta dato">
+          <span class="dato-valor" id="semana-minutos">0</span>
+          <span class="dato-etiqueta">Minutos (7 días)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. IMPORTAR CAPTURA (la usa la extensión de Claude: no cambiar estos ids) -->
+    <section id="importar">
+      <h2>Importar captura</h2>
+      <div class="tarjeta">
+        <p class="ayuda">Pegá el JSON generado por Claude. Obligatorios: <code>plataforma</code>, <code>seccion</code>, <code>url</code>, <code>resumen</code>.</p>
+        <textarea id="importar-json" rows="10" spellcheck="false" placeholder='{ "plataforma": "Hugging Face", "curso": "LLM Course", "seccion": "...", "url": "https://...", "resumen": "...", "puntosClave": [], "conceptos": [], "minutos": 30, "fecha": "2026-11-01" }'></textarea>
+        <button id="importar-btn" type="button" class="primario">Importar</button>
+        <p id="importar-ok" class="mensaje ok" role="status" hidden></p>
+        <p id="importar-error" class="mensaje error" role="alert" hidden></p>
+      </div>
+    </section>
+
+    <!-- 3. REGISTRO MANUAL -->
+    <section id="registro">
+      <h2>Registro manual</h2>
+      <form id="form-sesion" class="tarjeta formulario" novalidate>
+        <label>Plataforma *
+          <input type="text" name="plataforma" placeholder="Hugging Face">
+        </label>
+        <label>Curso
+          <input type="text" name="curso" placeholder="LLM Course">
+        </label>
+        <label>Sección *
+          <input type="text" name="seccion" placeholder="Capítulo 2 - Usando Transformers">
+        </label>
+        <label>URL *
+          <input type="url" name="url" placeholder="https://...">
+        </label>
+        <label>Resumen *
+          <textarea name="resumen" rows="3" placeholder="2-4 frases"></textarea>
+        </label>
+        <label>Puntos clave (uno por línea)
+          <textarea name="puntosClave" rows="3"></textarea>
+        </label>
+        <label>Conceptos (separados por coma)
+          <input type="text" name="conceptos" placeholder="tokenizer, pipeline">
+        </label>
+        <div class="fila-2">
+          <label>Minutos
+            <input type="number" name="minutos" min="0" step="1">
+          </label>
+          <label>Fecha
+            <input type="date" name="fecha">
+          </label>
+        </div>
+        <button type="submit" class="primario">Guardar sesión</button>
+        <p id="registro-msg" class="mensaje" role="status" hidden></p>
+      </form>
+    </section>
+
+    <!-- 4. HISTORIAL -->
+    <section id="historial">
+      <h2>Historial de sesiones</h2>
+      <div class="filtros">
+        <select id="filtro-plataforma" aria-label="Filtrar por plataforma"></select>
+        <input type="search" id="buscador" placeholder="Buscar…" aria-label="Buscar texto">
+      </div>
+      <div id="lista-sesiones"></div>
+    </section>
+
+    <!-- 5. PLANIFICADOR DE HÁBITOS -->
+    <section id="habitos">
+      <h2>Planificador semanal de hábitos</h2>
+
+      <form id="form-habito" class="tarjeta formulario" novalidate>
+        <div class="fila-2">
+          <label>Nombre *
+            <input type="text" name="nombre" placeholder="Lectura">
+          </label>
+          <label>Ícono
+            <select name="icono">
+              <option value="📚">📚 Libro</option>
+              <option value="🚭">🚭 Sin fumar</option>
+              <option value="💪">💪 Ejercicio</option>
+              <option value="🏃">🏃 Correr</option>
+              <option value="💧">💧 Agua</option>
+              <option value="🧘">🧘 Meditar</option>
+              <option value="😴">😴 Dormir</option>
+              <option value="✍️">✍️ Escribir</option>
+            </select>
+          </label>
+        </div>
+        <label>Tipo
+          <select name="tipo" id="habito-tipo">
+            <option value="diario">Hábito diario</option>
+            <option value="diassin">Días sin</option>
+          </select>
+        </label>
+        <fieldset id="habito-dias">
+          <legend>Días objetivo</legend>
+          <div class="dias-check">
+            <label><input type="checkbox" name="dia" value="0" checked> Lun</label>
+            <label><input type="checkbox" name="dia" value="1" checked> Mar</label>
+            <label><input type="checkbox" name="dia" value="2" checked> Mié</label>
+            <label><input type="checkbox" name="dia" value="3" checked> Jue</label>
+            <label><input type="checkbox" name="dia" value="4" checked> Vie</label>
+            <label><input type="checkbox" name="dia" value="5" checked> Sáb</label>
+            <label><input type="checkbox" name="dia" value="6" checked> Dom</label>
+          </div>
+        </fieldset>
+        <label id="habito-inicio-label" hidden>Fecha de inicio
+          <input type="date" name="inicio">
+        </label>
+        <button type="submit" class="primario">Crear hábito</button>
+        <p id="habito-msg" class="mensaje error" role="alert" hidden></p>
+      </form>
+
+      <div class="semana-nav">
+        <button type="button" id="semana-ant" aria-label="Semana anterior">←</button>
+        <strong id="semana-titulo"></strong>
+        <button type="button" id="semana-sig" aria-label="Semana siguiente">→</button>
+      </div>
+      <div class="tabla-scroll" id="tabla-habitos"></div>
+    </section>
+
+    <!-- 6. RESPALDO -->
+    <section id="respaldo">
+      <h2>Respaldo</h2>
+      <div class="tarjeta">
+        <div class="botones">
+          <button type="button" id="exportar-btn">Exportar</button>
+          <button type="button" id="importar-respaldo-btn">Importar respaldo</button>
+          <input type="file" id="respaldo-archivo" accept=".json,application/json" hidden>
+        </div>
+        <p id="respaldo-msg" class="mensaje" role="status" hidden></p>
+      </div>
+    </section>
+
+  </main>
+
+  </div><!-- /#app -->
+
+  <script src="app.js"></script>
+</body>
+</html>

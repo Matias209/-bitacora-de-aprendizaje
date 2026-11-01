@@ -1,0 +1,156 @@
+/* ===== Colores (se redefinen en modo oscuro) ===== */
+:root {
+  --fondo: #f4f6fb;
+  --tarjeta: #ffffff;
+  --texto: #1c2233;
+  --suave: #6a7287;
+  --borde: #dde2ee;
+  --acento: #4f46e5;
+  --acento-texto: #ffffff;
+  --ok-fondo: #e3f7e9;
+  --ok-texto: #17663a;
+  --error-fondo: #fde8e8;
+  --error-texto: #a12626;
+  --hoy: #eef0ff;
+  --radio: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #12141c;
+    --tarjeta: #1c2030;
+    --texto: #e8eaf2;
+    --suave: #9aa2b8;
+    --borde: #2d3348;
+    --acento: #818cf8;
+    --acento-texto: #12141c;
+    --ok-fondo: #14301f;
+    --ok-texto: #8be0aa;
+    --error-fondo: #3a1a1a;
+    --error-texto: #ff9d9d;
+    --hoy: #262b45;
+  }
+}
+
+/* ===== Base ===== */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  line-height: 1.5;
+}
+[hidden] { display: none !important; }
+
+main { max-width: 900px; margin: 0 auto; padding: 0 16px 48px; }
+section { margin-top: 32px; }
+h2 { margin: 0 0 12px; font-size: 1.3rem; }
+h3 { margin: 0; font-size: 1.05rem; }
+code { background: var(--hoy); padding: 1px 5px; border-radius: 4px; }
+
+/* ===== Barra superior fija ===== */
+.barra {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--tarjeta);
+  border-bottom: 1px solid var(--borde);
+  padding: 8px 16px;
+}
+.barra-titulo { display: flex; justify-content: space-between; align-items: center; max-width: 900px; margin-inline: auto; }
+.barra h1 { margin: 0; font-size: 1.1rem; }
+
+/* ===== Pantalla de clave ===== */
+.bloqueo { min-height: 100vh; display: grid; place-items: center; padding: 16px; margin: 0; }
+.bloqueo form { width: 100%; max-width: 380px; }
+.barra nav {
+  display: flex; gap: 6px; overflow-x: auto;
+  max-width: 900px; margin: 6px auto 0;
+}
+.barra nav a {
+  white-space: nowrap; text-decoration: none; color: var(--texto);
+  padding: 4px 12px; border-radius: 999px; border: 1px solid var(--borde);
+  font-size: 0.9rem;
+}
+.barra nav a:hover { background: var(--hoy); }
+
+/* ===== Tarjetas ===== */
+.tarjeta {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 16px;
+}
+
+/* ===== Panel ===== */
+.racha-grande { text-align: center; margin-bottom: 12px; }
+.racha-numero { font-size: 4rem; font-weight: 800; line-height: 1.1; }
+.racha-texto { color: var(--suave); }
+.grilla-datos {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+.dato { display: flex; flex-direction: column; text-align: center; }
+.dato-valor { font-size: 2rem; font-weight: 700; }
+.dato-etiqueta { color: var(--suave); font-size: 0.85rem; }
+
+/* ===== Formularios ===== */
+.formulario { display: grid; gap: 12px; }
+label { display: grid; gap: 4px; font-size: 0.9rem; font-weight: 600; }
+input, textarea, select, button { font: inherit; }
+input[type="text"], input[type="url"], input[type="number"], input[type="date"],
+input[type="search"], textarea, select {
+  width: 100%; padding: 8px 10px;
+  border: 1px solid var(--borde); border-radius: 8px;
+  background: var(--fondo); color: var(--texto);
+}
+textarea { resize: vertical; }
+textarea#importar-json { font-family: ui-monospace, Consolas, monospace; font-size: 0.85rem; margin-bottom: 12px; }
+.fila-2 { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+fieldset { border: 1px solid var(--borde); border-radius: 8px; margin: 0; padding: 8px 12px; }
+legend { font-size: 0.9rem; font-weight: 600; padding: 0 4px; }
+.dias-check { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.dias-check label { display: flex; align-items: center; gap: 4px; font-weight: 400; }
+.ayuda { margin-top: 0; color: var(--suave); font-size: 0.9rem; }
+
+button {
+  cursor: pointer; padding: 8px 16px;
+  border: 1px solid var(--borde); border-radius: 8px;
+  background: var(--tarjeta); color: var(--texto);
+}
+button:hover { background: var(--hoy); }
+button.primario { background: var(--acento); color: var(--acento-texto); border-color: var(--acento); font-weight: 600; }
+button.primario:hover { opacity: 0.9; }
+button.peligro { color: var(--error-texto); }
+button.chico { padding: 2px 10px; font-size: 0.8rem; }
+.botones { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ===== Mensajes ===== */
+.mensaje { margin: 12px 0 0; padding: 10px 12px; border-radius: 8px; }
+.mensaje.ok { background: var(--ok-fondo); color: var(--ok-texto); }
+.mensaje.error { background: var(--error-fondo); color: var(--error-texto); }
+
+/* ===== Historial ===== */
+.filtros { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; margin-bottom: 12px; }
+.sesion { margin-bottom: 12px; display: grid; gap: 8px; }
+.sesion-meta { color: var(--suave); font-size: 0.85rem; }
+.sesion ul { margin: 0; padding-left: 20px; }
+.etiquetas { display: flex; flex-wrap: wrap; gap: 6px; }
+.etiqueta { background: var(--hoy); padding: 2px 10px; border-radius: 999px; font-size: 0.8rem; }
+.sesion-pie { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.sesion-pie a { color: var(--acento); font-weight: 600; }
+.vacio { color: var(--suave); text-align: center; padding: 24px 0; }
+
+/* ===== Hábitos ===== */
+.semana-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 20px 0 8px; }
+.tabla-scroll { overflow-x: auto; }
+table.semana { width: 100%; border-collapse: collapse; background: var(--tarjeta); border: 1px solid var(--borde); border-radius: var(--radio); min-width: 640px; }
+table.semana th, table.semana td { padding: 8px 6px; border-bottom: 1px solid var(--borde); text-align: center; vertical-align: middle; }
+table.semana th.habito { text-align: left; min-width: 150px; }
+table.semana .hoy { background: var(--hoy); }
+table.semana .no-objetivo { opacity: 0.45; }
+table.semana input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--acento); }
+table.semana td input[type="text"] { min-width: 80px; font-size: 0.8rem; padding: 4px 6px; }
+.habito-info { font-weight: 400; font-size: 0.8rem; color: var(--suave); display: block; }
+.dias-sin { text-align: left; }
+.dias-sin strong { font-size: 1.1rem; }
