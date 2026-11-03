@@ -1,5 +1,5 @@
 /* ==========================================================
-   Bitácora de Aprendizaje
+   Bitácora de vuelo (antes "Bitácora de Aprendizaje")
    Todo el código está en este archivo, ordenado por bloques:
    1. Fechas   2. Datos (localStorage)   3. Cálculos (rachas y puntos)
    4. Sesiones   5. Hábitos   6. Acceso con clave   7. Respaldo   8. Arranque
@@ -352,21 +352,70 @@ function guardarManual(evento) {
 }
 
 // --- Panel principal ---
+
+// Rangos de la tripulación: se sube de rango al llegar a esos puntos.
+// Se calculan a partir de los puntos, así que no se guardan en ningún lado.
+const RANGOS = [
+  { desde: 0,    nombre: "Cadete" },
+  { desde: 500,  nombre: "Piloto" },
+  { desde: 1500, nombre: "Navegante" },
+  { desde: 3000, nombre: "Comandante" },
+  { desde: 5000, nombre: "Capitán de flota" },
+  { desde: 8000, nombre: "Almirante estelar" }
+];
+
+// Devuelve el rango actual y el siguiente (null si ya es el más alto)
+function rangoSegunPuntos(puntos) {
+  let posicion = 0;
+  RANGOS.forEach((rango, i) => { if (puntos >= rango.desde) posicion = i; });
+  return { actual: RANGOS[posicion], siguiente: RANGOS[posicion + 1] || null };
+}
+
 function renderPanel() {
   const puntos = calcularPuntos(datos.sesiones);
-  const nivel = Math.floor(puntos / 500) + 1;   // cada 500 puntos sube un nivel
+  const rango = rangoSegunPuntos(puntos);
 
   $("racha-actual").textContent = rachaActual();
   $("racha-max").textContent = rachaMaxima();
   $("puntos-total").textContent = puntos;
-  $("nivel").textContent = nivel;
-  $("nivel-detalle").textContent = "Nivel (" + (puntos % 500) + "/500 al siguiente)";
+  $("nivel").textContent = rango.actual.nombre;
+  $("nivel-detalle").textContent = rango.siguiente
+    ? "Rango (" + (rango.siguiente.desde - puntos) + " puntos para " + rango.siguiente.nombre + ")"
+    : "Rango máximo";
+
+  renderTrayectoria();
 
   // Últimos 7 días: hoy y los 6 anteriores
   const desde = sumarDias(hoy(), -6);
   const semana = datos.sesiones.filter(s => s.fecha >= desde && s.fecha <= hoy());
   $("semana-sesiones").textContent = semana.length;
   $("semana-minutos").textContent = semana.reduce((suma, s) => suma + (s.minutos || 0), 0);
+}
+
+// --- Trayectoria de los últimos 30 días ---
+// Una estrella por día: encendida si ese día hubo al menos una sesión.
+// El último punto es hoy.
+const DIAS_TRAYECTORIA = 30;
+
+function renderTrayectoria() {
+  const fechas = fechasConSesion();
+  const estrellas = [];
+  let diasConEstudio = 0;
+
+  for (let atras = DIAS_TRAYECTORIA - 1; atras >= 0; atras--) {
+    const fecha = sumarDias(hoy(), -atras);
+    const estudio = fechas.has(fecha);
+    if (estudio) diasConEstudio++;
+
+    const [, mes, dia] = fecha.split("-").map(Number);
+    const texto = DIAS_CORTOS[indiceSemana(fecha)] + " " + dia + " " + MESES[mes - 1] + ": " +
+      (estudio ? "estudiaste" : "sin sesión");
+    const clases = "estrella" + (estudio ? " encendida" : "") + (atras === 0 ? " es-hoy" : "");
+    estrellas.push(h("span", { class: clases, title: texto, "aria-label": texto }));
+  }
+
+  $("trayectoria").replaceChildren(...estrellas);
+  $("trayectoria-resumen").textContent = diasConEstudio + " de " + DIAS_TRAYECTORIA + " días con estudio";
 }
 
 // --- Historial ---
@@ -401,11 +450,22 @@ function renderHistorial() {
     return;
   }
 
+  // Cada sesión se muestra como una entrada de bitácora:
+  // a la izquierda la fecha (como en un registro de vuelo), a la derecha el contenido
   lista.replaceChildren(...sesiones.map(s => {
-    const meta = [s.plataforma, s.curso].filter(Boolean).join(" · ") +
-      " — " + s.fecha + (s.minutos ? " — " + s.minutos + " min" : "");
-    return h("article", { class: "tarjeta sesion" },
-      h("div", { class: "sesion-meta" }, meta),
+    const [anio, mes, dia] = s.fecha.split("-").map(Number);
+
+    const columnaFecha = h("div", { class: "sesion-fecha" },
+      h("span", { class: "sesion-dia" }, String(dia)),
+      h("span", {}, MESES[mes - 1] + " " + anio),
+      s.minutos ? h("span", { class: "sesion-minutos" }, s.minutos + " min") : null
+    );
+
+    const cuerpo = h("div", { class: "sesion-cuerpo" },
+      h("div", { class: "sesion-meta" },
+        h("strong", {}, s.plataforma),
+        s.curso ? h("span", {}, s.curso) : null
+      ),
       h("h3", {}, s.seccion),
       h("p", {}, s.resumen),
       s.puntosClave && s.puntosClave.length
@@ -420,6 +480,8 @@ function renderHistorial() {
         h("button", { type: "button", class: "peligro chico", onclick: () => borrarSesion(s.id) }, "Borrar")
       )
     );
+
+    return h("article", { class: "tarjeta sesion" }, columnaFecha, cuerpo);
   }));
 }
 

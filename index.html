@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bitácora de Aprendizaje</title>
-  <!-- Favicon en línea (emoji 📓 dentro de un SVG): así no hace falta un archivo extra -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📓%3C/text%3E%3C/svg%3E">
+  <title>Bitácora de vuelo</title>
+  <!-- Favicon en línea (emoji 🚀 dentro de un SVG): así no hace falta un archivo extra -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🚀%3C/text%3E%3C/svg%3E">
+  <!-- Tipografías de la suite OrbitCX. Sin internet, la página usa las del sistema y sigue funcionando -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,7 +17,8 @@
   <!-- Pantalla de clave: mientras está visible, la app no muestra ningún dato -->
   <section id="bloqueo" class="bloqueo" hidden>
     <form id="form-acceso" class="tarjeta formulario" novalidate>
-      <h2 id="acceso-titulo">🔒 Bitácora de Aprendizaje</h2>
+      <div class="escotilla" aria-hidden="true"></div>
+      <h2 id="acceso-titulo">Bitácora de vuelo</h2>
       <p id="acceso-ayuda" class="ayuda"></p>
       <label>Clave
         <input type="password" name="clave" autocomplete="current-password">
@@ -32,7 +37,7 @@
   <!-- Navegación por anclas: todas las secciones están en la misma página -->
   <header class="barra">
     <div class="barra-titulo">
-      <h1>📓 Bitácora de Aprendizaje</h1>
+      <h1><span class="logo" aria-hidden="true"></span>Bitácora de vuelo</h1>
       <button type="button" id="bloquear-btn" class="chico">🔒 Bloquear</button>
     </div>
     <nav>
@@ -51,8 +56,16 @@
     <section id="panel">
       <h2>Panel principal</h2>
       <div class="tarjeta racha-grande">
-        <div class="racha-numero"><span>🔥</span> <span id="racha-actual">0</span></div>
+        <div class="racha-numero"><span aria-hidden="true">🚀</span> <span id="racha-actual">0</span></div>
         <div class="racha-texto">días seguidos de estudio</div>
+      </div>
+      <!-- Trayectoria: una estrella por cada uno de los últimos 30 días (la arma renderTrayectoria en app.js) -->
+      <div class="tarjeta trayectoria">
+        <div class="trayectoria-cabeza">
+          <h3>Últimos 30 días</h3>
+          <span id="trayectoria-resumen" class="ayuda"></span>
+        </div>
+        <div id="trayectoria" class="trayectoria-camino"></div>
       </div>
       <div class="grilla-datos">
         <div class="tarjeta dato">
@@ -65,7 +78,7 @@
         </div>
         <div class="tarjeta dato">
           <span class="dato-valor" id="nivel">1</span>
-          <span class="dato-etiqueta" id="nivel-detalle">Nivel</span>
+          <span class="dato-etiqueta" id="nivel-detalle">Rango</span>
         </div>
         <div class="tarjeta dato">
           <span class="dato-valor" id="semana-sesiones">0</span>

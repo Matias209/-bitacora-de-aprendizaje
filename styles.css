@@ -1,156 +1,264 @@
-/* ===== Colores (se redefinen en modo oscuro) ===== */
+/* ==========================================================
+   Bitácora de vuelo — estilos
+   Misma estética que la suite OrbitCX: fondo de espacio,
+   tarjetas azul noche y un acento turquesa propio de la bitácora.
+   El modo oscuro es el principal; si la computadora está en modo
+   claro, se usa la versión clara (ver el bloque de abajo).
+   ========================================================== */
+
+/* ===== Colores ===== */
 :root {
-  --fondo: #f4f6fb;
-  --tarjeta: #ffffff;
-  --texto: #1c2233;
-  --suave: #6a7287;
-  --borde: #dde2ee;
-  --acento: #4f46e5;
-  --acento-texto: #ffffff;
-  --ok-fondo: #e3f7e9;
-  --ok-texto: #17663a;
-  --error-fondo: #fde8e8;
-  --error-texto: #a12626;
-  --hoy: #eef0ff;
-  --radio: 12px;
+  --fondo: #060A18;
+  --fondo-2: #0B1126;
+  --tarjeta: #0F1733;
+  --tarjeta-2: #152044;
+  --texto: #E9EDFA;
+  --suave: #8E99BD;
+  --tenue: #5B6690;
+  --borde: #24315E;
+  --acento: #5EEAD4;          /* turquesa: el color de la bitácora */
+  --acento-texto: #04111F;
+  --ok-fondo: #0F2E2A;
+  --ok-texto: #6EE7B7;
+  --error-fondo: #3A1424;
+  --error-texto: #FDA4AF;
+  --hoy: #1A2550;
+  --estrellas: 1;             /* opacidad del fondo de estrellas */
+  --radio: 14px;
+  --fuente-titulos: "Space Grotesk", system-ui, sans-serif;
+  --fuente-texto: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fuente-datos: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --fondo: #12141c;
-    --tarjeta: #1c2030;
-    --texto: #e8eaf2;
-    --suave: #9aa2b8;
-    --borde: #2d3348;
-    --acento: #818cf8;
-    --acento-texto: #12141c;
-    --ok-fondo: #14301f;
-    --ok-texto: #8be0aa;
-    --error-fondo: #3a1a1a;
-    --error-texto: #ff9d9d;
-    --hoy: #262b45;
+    --fondo: #F4F6FC;
+    --fondo-2: #EAEFF9;
+    --tarjeta: #FFFFFF;
+    --tarjeta-2: #F1F4FB;
+    --texto: #0B1230;
+    --suave: #56607F;
+    --tenue: #8A93B0;
+    --borde: #D8DEEE;
+    --acento: #0F9488;
+    --acento-texto: #FFFFFF;
+    --ok-fondo: #E3F7EF;
+    --ok-texto: #116149;
+    --error-fondo: #FDE8EC;
+    --error-texto: #A1263F;
+    --hoy: #E3F4F2;
+    --estrellas: 0;
+    color-scheme: light;
   }
 }
 
 /* ===== Base ===== */
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 110px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--fuente-texto);
   background: var(--fondo);
   color: var(--texto);
-  line-height: 1.5;
+  line-height: 1.55;
+}
+/* Fondo de estrellas: puntos chicos dibujados con degradés, sin imágenes */
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  opacity: var(--estrellas);
+  background:
+    radial-gradient(1px 1px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 72% 12%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 38% 64%, #cfe8ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 46%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 82%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 6% 52%, #fff 50%, transparent 51%),
+    radial-gradient(800px 500px at 90% -10%, rgba(94, 234, 212, .10), transparent 60%);
+  background-size: 340px 340px, 420px 420px, 380px 380px, 300px 300px, 460px 460px, 280px 280px, 100% 100%;
 }
 [hidden] { display: none !important; }
 
-main { max-width: 900px; margin: 0 auto; padding: 0 16px 48px; }
-section { margin-top: 32px; }
-h2 { margin: 0 0 12px; font-size: 1.3rem; }
+main { max-width: 900px; margin: 0 auto; padding: 0 16px 56px; }
+section { margin-top: 40px; }
+h1, h2, h3 { font-family: var(--fuente-titulos); letter-spacing: -0.01em; }
+h2 { margin: 0 0 14px; font-size: 1.4rem; }
 h3 { margin: 0; font-size: 1.05rem; }
-code { background: var(--hoy); padding: 1px 5px; border-radius: 4px; }
+code { font-family: var(--fuente-datos); font-size: 0.85em; background: var(--hoy); padding: 1px 5px; border-radius: 4px; }
+a { color: var(--acento); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
 
 /* ===== Barra superior fija ===== */
 .barra {
   position: sticky; top: 0; z-index: 10;
-  background: var(--tarjeta);
+  background: color-mix(in srgb, var(--fondo) 80%, transparent);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--borde);
-  padding: 8px 16px;
+  padding: 10px 16px;
 }
 .barra-titulo { display: flex; justify-content: space-between; align-items: center; max-width: 900px; margin-inline: auto; }
-.barra h1 { margin: 0; font-size: 1.1rem; }
-
-/* ===== Pantalla de clave ===== */
-.bloqueo { min-height: 100vh; display: grid; place-items: center; padding: 16px; margin: 0; }
-.bloqueo form { width: 100%; max-width: 380px; }
+.barra h1 { margin: 0; font-size: 1.15rem; display: flex; align-items: center; gap: 10px; }
+/* Logo: un planeta turquesa con su órbita, hecho solo con CSS */
+.logo {
+  width: 22px; height: 22px; border-radius: 50%; position: relative; flex: none;
+  background: radial-gradient(circle at 35% 30%, #ECFEFF, var(--acento) 45%, #0E7490);
+}
+.logo::after {
+  content: ""; position: absolute; inset: 7px -6px; border: 1.5px solid var(--acento);
+  border-radius: 50%; transform: rotate(-22deg); opacity: .7;
+}
 .barra nav {
   display: flex; gap: 6px; overflow-x: auto;
-  max-width: 900px; margin: 6px auto 0;
+  max-width: 900px; margin: 8px auto 0;
 }
 .barra nav a {
-  white-space: nowrap; text-decoration: none; color: var(--texto);
+  white-space: nowrap; text-decoration: none; color: var(--suave);
   padding: 4px 12px; border-radius: 999px; border: 1px solid var(--borde);
   font-size: 0.9rem;
 }
-.barra nav a:hover { background: var(--hoy); }
+.barra nav a:hover { color: var(--texto); background: var(--hoy); }
+
+/* ===== Pantalla de clave ("escotilla") ===== */
+.bloqueo { min-height: 100vh; display: grid; place-items: center; padding: 16px; margin: 0; }
+.bloqueo form { width: 100%; max-width: 380px; text-align: center; }
+.bloqueo label { text-align: left; }
+.escotilla {
+  width: 72px; height: 72px; margin: 4px auto 0; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ECFEFF, var(--acento) 40%, #0E7490 80%, #083344);
+  box-shadow: 0 0 40px color-mix(in srgb, var(--acento) 35%, transparent);
+}
 
 /* ===== Tarjetas ===== */
 .tarjeta {
   background: var(--tarjeta);
   border: 1px solid var(--borde);
   border-radius: var(--radio);
-  padding: 16px;
+  padding: 18px;
 }
 
 /* ===== Panel ===== */
-.racha-grande { text-align: center; margin-bottom: 12px; }
-.racha-numero { font-size: 4rem; font-weight: 800; line-height: 1.1; }
-.racha-texto { color: var(--suave); }
+.racha-grande { text-align: center; margin-bottom: 12px; padding: 26px 18px; }
+.racha-numero { font-family: var(--fuente-titulos); font-size: 4.5rem; font-weight: 700; line-height: 1; }
+.racha-texto { color: var(--suave); margin-top: 6px; }
 .grilla-datos {
-  display: grid; gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  display: grid; gap: 12px; margin-top: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
-.dato { display: flex; flex-direction: column; text-align: center; }
-.dato-valor { font-size: 2rem; font-weight: 700; }
+.dato { display: flex; flex-direction: column; text-align: center; gap: 2px; }
+.dato-valor { font-family: var(--fuente-titulos); font-size: 1.9rem; font-weight: 600; line-height: 1.2; }
 .dato-etiqueta { color: var(--suave); font-size: 0.85rem; }
+/* El rango es un nombre, no un número: va un poco más chico para que entre */
+#nivel { font-size: 1.35rem; color: var(--acento); }
+
+/* ===== Trayectoria de los últimos 30 días ===== */
+.trayectoria-cabeza { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.trayectoria-cabeza .ayuda { margin: 0; }
+.trayectoria-camino {
+  position: relative; display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 2px;
+}
+/* La línea de la órbita, detrás de las estrellas */
+.trayectoria-camino::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%;
+  border-top: 1px dashed var(--borde);
+}
+.estrella {
+  position: relative; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--tarjeta-2); border: 1px solid var(--borde);
+}
+.estrella.encendida {
+  width: 12px; height: 12px; border: 0;
+  background: var(--acento);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--acento) 70%, transparent);
+}
+/* Hoy: un anillo alrededor, para saber dónde termina la trayectoria */
+.estrella.es-hoy { outline: 2px solid var(--texto); outline-offset: 3px; }
 
 /* ===== Formularios ===== */
 .formulario { display: grid; gap: 12px; }
-label { display: grid; gap: 4px; font-size: 0.9rem; font-weight: 600; }
+label { display: grid; gap: 4px; font-size: 0.9rem; font-weight: 500; color: var(--suave); }
 input, textarea, select, button { font: inherit; }
 input[type="text"], input[type="url"], input[type="number"], input[type="date"],
-input[type="search"], textarea, select {
-  width: 100%; padding: 8px 10px;
-  border: 1px solid var(--borde); border-radius: 8px;
-  background: var(--fondo); color: var(--texto);
+input[type="password"], input[type="search"], textarea, select {
+  width: 100%; padding: 9px 11px;
+  border: 1px solid var(--borde); border-radius: 10px;
+  background: var(--fondo-2); color: var(--texto);
 }
 textarea { resize: vertical; }
-textarea#importar-json { font-family: ui-monospace, Consolas, monospace; font-size: 0.85rem; margin-bottom: 12px; }
+textarea#importar-json { font-family: var(--fuente-datos); font-size: 0.85rem; margin-bottom: 12px; }
 .fila-2 { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
-fieldset { border: 1px solid var(--borde); border-radius: 8px; margin: 0; padding: 8px 12px; }
-legend { font-size: 0.9rem; font-weight: 600; padding: 0 4px; }
+fieldset { border: 1px solid var(--borde); border-radius: 10px; margin: 0; padding: 8px 12px; }
+legend { font-size: 0.9rem; font-weight: 500; color: var(--suave); padding: 0 4px; }
 .dias-check { display: flex; flex-wrap: wrap; gap: 4px 14px; }
-.dias-check label { display: flex; align-items: center; gap: 4px; font-weight: 400; }
+.dias-check label { display: flex; align-items: center; gap: 4px; font-weight: 400; color: var(--texto); }
 .ayuda { margin-top: 0; color: var(--suave); font-size: 0.9rem; }
 
 button {
-  cursor: pointer; padding: 8px 16px;
-  border: 1px solid var(--borde); border-radius: 8px;
-  background: var(--tarjeta); color: var(--texto);
+  cursor: pointer; padding: 9px 16px;
+  border: 1px solid var(--borde); border-radius: 10px;
+  background: var(--tarjeta-2); color: var(--texto);
 }
-button:hover { background: var(--hoy); }
+button:hover { border-color: var(--acento); }
 button.primario { background: var(--acento); color: var(--acento-texto); border-color: var(--acento); font-weight: 600; }
 button.primario:hover { opacity: 0.9; }
-button.peligro { color: var(--error-texto); }
-button.chico { padding: 2px 10px; font-size: 0.8rem; }
+button.peligro { color: var(--error-texto); background: transparent; }
+button.chico { padding: 3px 10px; font-size: 0.8rem; }
 .botones { display: flex; flex-wrap: wrap; gap: 8px; }
 
 /* ===== Mensajes ===== */
-.mensaje { margin: 12px 0 0; padding: 10px 12px; border-radius: 8px; }
+.mensaje { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; }
 .mensaje.ok { background: var(--ok-fondo); color: var(--ok-texto); }
 .mensaje.error { background: var(--error-fondo); color: var(--error-texto); }
 
-/* ===== Historial ===== */
+/* ===== Historial: cada sesión es una entrada de bitácora ===== */
 .filtros { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; margin-bottom: 12px; }
-.sesion { margin-bottom: 12px; display: grid; gap: 8px; }
-.sesion-meta { color: var(--suave); font-size: 0.85rem; }
+.sesion { margin-bottom: 12px; display: grid; grid-template-columns: 84px 1fr; gap: 18px; }
+/* Columna de la fecha, como en un registro de vuelo */
+.sesion-fecha {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding-right: 16px; border-right: 1px solid var(--borde);
+  font-family: var(--fuente-datos); font-size: 0.8rem; color: var(--suave); text-align: center;
+}
+.sesion-dia { font-family: var(--fuente-titulos); font-size: 2rem; font-weight: 700; line-height: 1; color: var(--texto); }
+.sesion-minutos { margin-top: 6px; color: var(--acento); }
+.sesion-cuerpo { display: grid; gap: 8px; min-width: 0; }
+.sesion-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; color: var(--suave); font-size: 0.85rem; }
+.sesion-meta strong { color: var(--acento); font-weight: 600; }
+.sesion p { margin: 0; }
 .sesion ul { margin: 0; padding-left: 20px; }
 .etiquetas { display: flex; flex-wrap: wrap; gap: 6px; }
 .etiqueta { background: var(--hoy); padding: 2px 10px; border-radius: 999px; font-size: 0.8rem; }
 .sesion-pie { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.sesion-pie a { color: var(--acento); font-weight: 600; }
+.sesion-pie a { font-weight: 600; }
 .vacio { color: var(--suave); text-align: center; padding: 24px 0; }
 
 /* ===== Hábitos ===== */
 .semana-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 20px 0 8px; }
+.semana-nav strong { font-family: var(--fuente-titulos); }
 .tabla-scroll { overflow-x: auto; }
 table.semana { width: 100%; border-collapse: collapse; background: var(--tarjeta); border: 1px solid var(--borde); border-radius: var(--radio); min-width: 640px; }
-table.semana th, table.semana td { padding: 8px 6px; border-bottom: 1px solid var(--borde); text-align: center; vertical-align: middle; }
-table.semana th.habito { text-align: left; min-width: 150px; }
+table.semana th, table.semana td { padding: 9px 6px; border-bottom: 1px solid var(--borde); text-align: center; vertical-align: middle; }
+table.semana th { font-weight: 500; color: var(--suave); }
+table.semana th.habito { text-align: left; min-width: 150px; color: var(--texto); }
 table.semana .hoy { background: var(--hoy); }
-table.semana .no-objetivo { opacity: 0.45; }
+table.semana .no-objetivo { opacity: 0.4; }
 table.semana input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--acento); }
 table.semana td input[type="text"] { min-width: 80px; font-size: 0.8rem; padding: 4px 6px; }
 .habito-info { font-weight: 400; font-size: 0.8rem; color: var(--suave); display: block; }
 .dias-sin { text-align: left; }
 .dias-sin strong { font-size: 1.1rem; }
+
+/* ===== Pantallas chicas ===== */
+@media (max-width: 560px) {
+  .fila-2, .filtros { grid-template-columns: 1fr; }
+  .racha-numero { font-size: 3.6rem; }
+  .sesion { grid-template-columns: 1fr; gap: 10px; }
+  .sesion-fecha { flex-direction: row; gap: 8px; padding: 0 0 10px; border-right: 0; border-bottom: 1px solid var(--borde); }
+  .sesion-dia { font-size: 1.3rem; }
+  .sesion-minutos { margin: 0 0 0 auto; }
+  /* En celular, 30 estrellas no entran cómodas: se achican */
+  .estrella { width: 6px; height: 6px; }
+  .estrella.encendida { width: 8px; height: 8px; }
+}
